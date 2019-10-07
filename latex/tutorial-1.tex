@@ -1,0 +1,200 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{amsmath,amssymb}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+
+%opening
+\title{Solving Integer Optimization Problems with ZIMPL and SCIP}
+\author{Gregor Hendel\and
+        Thorsten Koch\and
+        Jakob Witzig}
+
+\definecolor{seagreen}{rgb}{0.18,0.74,0.56}
+\definecolor{darkgreen}{rgb}{0.0,0.35,0.00}
+\definecolor{navyblue}{rgb}{0.0,0.0,0.5}
+\definecolor{steelblue}{rgb}{0.27,0.51,0.71}
+\definecolor{siennabrown}{rgb}{0.63,0.32,0.18}
+\definecolor{firebrickred}{rgb}{0.69,0.13,0.13}
+\definecolor{gray75}{rgb}{0.75,0.75,0.75}
+
+\lstdefinelanguage{zimpl}{%
+   keywords={set,var,param,minimize,maximize,subto},%
+   ndkeywords={read,as,comment,binary,integer,real,sum,forall,do,in,proj,vif,vabs,and,or,then,else,end},%
+   sensitive,%
+   showstringspaces=false,%
+   morecomment=[l]\#,
+   morestring=[b]",%
+   keywordstyle=\color{red},%
+   ndkeywordstyle=\color{navyblue},%
+   commentstyle=\color{darkgreen},%
+   stringstyle=\color{steelblue}%
+}[keywords,comments,strings]%
+
+\begin{document}
+
+\maketitle
+
+\section{The SCIP Optimization Suite}
+
+\todo[inline]{Jakob}
+
+\section{The Facility Location Problem}
+
+\todo[inline]{Jakob}
+
+\begin{align}
+%
+\begin{aligned}
+& & \min \sum\limits_{j \in J} f_{j} y_{j} + \sum\limits_{i\in I, j\in J} c_{j,i} x_{j,i}\\
+&\text{s.t.}& \sum\limits_{j \in J} : x_{j,i} &= 1 & \text{for all $i \in I$}\\
+&& \sum\limits_{i \in I} d_{i} x_{j,i} & \leq s_{j} y_{j} & \text{for all $j \in J$}\\
+&& (x,y) & \in \{0,1\}^{|J \times I|} \times \{0,1\}^{|J|}
+\end{aligned}
+\tag{SSCFLP}\label{eq:model}
+\end{align}
+
+
+\section{Building a ZIMPL Model}
+
+The first part of this tutorial describes the translation of the mathematical model \eqref{eq:model} from the previous section into a file that SCIP can read and solve.
+%
+For this translation, we use the modeling language ZIMPL (Zuse Institute Mathematical Programming Language) which is part of the SCIP Optimization Suite.
+%
+As data source, we use a publicly available data set~\footnote{\url{http://or-brescia.unibs.it/instances/instances_sscflp}, ``Data set OR-library''} used by~\cite{Guastaroba14},
+which contains a total of 36 different SSCFLP instances of varying sizes, ranging between 16--100 facilities and 50--1000 customers, respectively.
+%
+In order to highlight how ZIMPL reads data, we modified the original data format without changing the data itself.
+%
+The parameters of each instance are described in a single data file (extension \texttt{.dat}), which now has the following format:
+
+\begin{itemize}
+  \item the first line contains the number $|J|$ of facilities and $|I|$ of customers
+  \item the next $|J|$ lines contain, for each facility $j \in J$, the index $j$ itself, the cost coefficient $f_{j}$ to open $j$ and its supply $s_{j}$.
+  \item the next $|I|$ lines list the demand of each customer $i \in I$, one per line.
+  \item the remaining $|I| \times |J|$ lines list the costs $c_{j,i}$ to link facility $j$ to customer $i$.
+\end{itemize}
+
+The task is to write a ZIMPL file that combines the data source and the mathematical model into an instance of SSCFLP.
+%
+For this purpose, we open a file \texttt{sscflp.zpl} with a text editor, and fill it with the corresponding ZIMPL statements.
+%
+See below how the data source can be translated into parameters.
+%
+ZIMPL uses the intuitive notions of ``sets'' and ``param(eter)s''
+to refer to given data of an instance.
+%
+The naming of the individual parameters is close to the mathematical model~\eqref{eq:model}.
+
+
+  \lstinputlisting[language=zimpl,
+  firstline=1,
+  lastline=6,
+  caption=Reading input data with ZIMPL]{../data/sscflp.zpl}
+
+The first param is the name of the data file that we want to process.
+%
+This parameter is used in all subsequent data processing step, with the advantage that the ZIMPL model can be reused for the other data files by changing only this \texttt{datafile} parameter.
+%
+The next two lines contain the statements to read the number of facilities and customers into ZIMPL parameters \texttt{NJ} and \texttt{NI}, respectively.
+%
+Here, the command \texttt{use 1} specifies how many lines of the data file should be read in, in this case, only the first line.
+%
+We use those two parameters to declare two sets \texttt{J} and \texttt{I}, which we use as index sets for remaining data to be read in.
+
+\resizebox{\textwidth}{!}{
+  \lstinputlisting[language=zimpl,
+  firstline=7,
+  lastline=12,
+  caption=Reading input data with ZIMPL continued]{../data/sscflp.zpl}
+}
+
+We parse the supply of each facility into a new ZIMPL parameter \texttt{s[J]} that is indexed over the set \texttt{J} of facilities.
+%
+Note that the very first line of the data file does not contain facility information.
+%
+The \texttt{read} command is executed with the \texttt{skip 1} which tells ZIMPL to skip the first line.
+%
+Similar \texttt{read} directives are used to declare the opening costs \texttt{f[J]} per facility, the demand \texttt{d[I]} per customer, and the connection costs \texttt{c[J * I]}.
+%
+Note that this parameter can be conveniently declared over the cross-product of the two individual sets of facilities and customers,
+to denote all possible combinations of facilities and customers.
+%
+
+The second part of \texttt{sscflp.zpl} uses the data to build the corresponding instance of the mathematical model~\eqref{eq:model}.
+%
+
+\resizebox{\textwidth}{!}{
+  \lstinputlisting[language=zimpl,
+  firstline=13,
+  caption=Model Declaration in sscflp.zpl]{../data/sscflp.zpl}
+}
+%
+First, binary variables are declared, which encode the decision which facility should be opened (\texttt{y[J]}),
+and the decisions \texttt{x[J*I]} to connect customer and facility, the latter of which are again indexed by the cross-product \texttt{J*I}.
+%
+The next step is to express the objective function in terms of the variables and parameters.
+%
+In our case, we declare that the solver should minimize the objective function named ``cost'', and express the connection and opening costs by two summations over the ground sets of facilities and the product of facilities and customers.
+%
+Finally, the two types of constraints of~\eqref{eq:model} are declared with the help of the \texttt{subto} key word of ZIMPL, followed by the prefixes \texttt{assign} and \texttt{capacity}, respectively.
+%
+Both declarations use a \texttt{forall} statement, which will cause ZIMPL to create one constraint of type \texttt{assign} per customer in \texttt{I} and one constraint of type \texttt{capacity} per facility in \texttt{J}.
+
+The model \texttt{sscflp.zpl} can be passed directly to ZIMPL to create an instance \texttt{sscflp.lp} via the following command line call.
+This invocation reads the data file ``cap61.dat'' as specified in
+the first line of \texttt{sscflp.zpl}.
+
+\begin{lstlisting}[language=bash,caption=ZIMPL command line invokation]
+zimpl sscflp.zpl
+
+Instructions evaluated: 41042
+Name: sscflp.zpl   Variables: 816   Constraints: 66   Non Zeros: 1616
+Writing [sscflp.lp]
+Writing [sscflp.tbl]
+\end{lstlisting}
+
+The data file lists 16 facilities and 50 customers, which is matched by the number of variables and constraints of the resulting model.
+%
+
+As promised, we also show how to switch the data set to a different data file.
+%
+It makes sense to also change the basename of the resulting files to avoid overriding the existing instance \texttt{sscflp.lp} from the previous call.
+
+\begin{lstlisting}[language=bash,caption=ZIMPL command line invokation with options]
+zimpl -o capa1 -Ddatafile=capa1.dat sscflp.zpl
+
+Instructions evaluated: 4922017
+Name: sscflp.zpl   Variables: 100100   Constraints: 1100   Non Zeros: 200100
+Writing [capa1.lp]
+Writing [capa1.tbl]
+\end{lstlisting}
+
+This call creates a much larger instance \texttt{capa1.lp} based on the data in \texttt{capa1.dat} (100 facilities, 1000 customers).
+
+
+\paragraph{Remarks.}
+
+For this tutorial, we focus on the most basic instructions of ZIMPL for reading data and constructing mathematical optimization models.
+Please refer to the reference manual of ZIMPL\footnote{accessible online via \url{https://zimpl.zib.de/download/zimpl.pdf}} for a complete overview of key words, operators, and further examples of the ZIMPL modeling language.
+The examples of the reference manual are contained in the \texttt{examples} directory of the ZIMPL source code.
+
+
+\section{Solution of the Model with SCIP}
+
+\todo[inline]{Gregor}
+
+\section{Outlook}
+
+\todo[inline]{Thorsten}
+
+\cite{*}
+
+\section*{Bibliography}
+
+\bibliographystyle{alpha}
+\bibliography{tutorial}
+
+\end{document}
