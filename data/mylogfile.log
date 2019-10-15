@@ -1,0 +1,60 @@
+SCIP version 6.0.2 [precision: 8 byte] [memory: block] [mode: optimized] [LP solver: SoPlex 4.0.2] [GitHash: e639a0059d]
+Copyright (C) 2002-2019 Konrad-Zuse-Zentrum fuer Informationstechnik Berlin (ZIB)
+
+External codes:
+  Readline 7.0         GNU library for command line editing (gnu.org/s/readline)
+  SoPlex 4.0.2         Linear Programming Solver developed at Zuse Institute Berlin (soplex.zib.de) [GitHash: b8833cd3]
+  CppAD 20180000.0     Algorithmic Differentiation of C++ algorithms developed by B. Bell (www.coin-or.org/CppAD)
+  ZLIB 1.2.11          General purpose compression library by J. Gailly and M. Adler (zlib.net)
+  GMP 6.1.2            GNU Multiple Precision Arithmetic Library developed by T. Granlund (gmplib.org)
+  bliss 0.73p          Computing Graph Automorphism Groups by T. Junttila and P. Kaski (http://www.tcs.hut.fi/Software/bliss/)
+
+user parameter file <scip.set> not found - using default parameters
+
+SCIP> read cap61.lp
+
+read problem <cap61.lp>
+============
+
+original problem has 816 variables (0 bin, 816 int, 0 impl, 0 cont) and 66 constraints
+
+SCIP> optimize
+
+
+presolving:
+(round 1, fast)       1 del vars, 0 del conss, 0 add conss, 0 chg bounds, 0 chg sides, 0 chg coeffs, 0 upgd conss, 0 impls, 162 clqs
+(round 2, exhaustive) 1 del vars, 0 del conss, 0 add conss, 0 chg bounds, 0 chg sides, 0 chg coeffs, 66 upgd conss, 0 impls, 162 clqs
+   (0.0s) probing: 51/815 (6.3%) - 0 fixings, 0 aggregations, 0 implications, 0 bound changes
+   (0.0s) probing aborted: 50/50 successive totally useless probings
+presolving (3 rounds: 3 fast, 2 medium, 2 exhaustive):
+ 1 deleted vars, 0 deleted constraints, 0 added constraints, 0 tightened bounds, 0 added holes, 0 changed sides, 0 changed coefficients
+ 0 implications, 882 cliques
+presolved problem has 815 variables (815 bin, 0 int, 0 impl, 0 cont) and 66 constraints
+     16 constraints of type <knapsack>
+     50 constraints of type <setppc>
+transformed objective value is always integral (scale: 0.0125)
+Presolving Time: 0.03
+
+ time | node  | left  |LP iter|LP it/n| mem |mdpt |frac |vars |cons |cols |rows |cuts |confs|strbr|  dualbound   | primalbound  |  gap
+Q 0.0s|     1 |     0 |     0 |     - |6450k|   0 |   - | 815 |  66 | 815 |  66 |   0 |   0 |   0 | 0.000000e+00 | 9.504702e+05 |    Inf
+  0.1s|     1 |     0 |   106 |     - |7653k|   0 |  15 | 815 |  78 | 815 |  66 |   0 |  12 |   0 | 8.655387e+05 | 9.504702e+05 |   9.81%
+s 0.1s|     1 |     0 |   106 |     - |7676k|   0 |  15 | 815 |  78 | 815 |  66 |   0 |  12 |   0 | 8.655387e+05 | 9.459285e+05 |   9.29%
+  0.1s|     1 |     0 |   106 |     - |7676k|   0 |  15 | 815 |  78 | 815 |  66 |   0 |  12 |   0 | 8.655387e+05 | 9.459285e+05 |   9.29%
+  0.1s|     1 |     0 |   106 |     - |7676k|   0 |  15 | 815 |  78 | 815 |  66 |   0 |  12 |   0 | 8.655387e+05 | 9.459285e+05 |   9.29%
+  0.1s|     1 |     0 |   131 |     - |7735k|   0 |  22 | 815 |  78 | 815 |  80 |  14 |  12 |   0 | 9.168466e+05 | 9.459285e+05 |   3.17%
+  0.1s|     1 |     0 |   131 |     - |7794k|   0 |  22 | 815 |  78 | 815 |  79 |  14 |  12 |   0 | 9.168466e+05 | 9.459285e+05 |   3.17%
+  0.1s|     1 |     0 |   149 |     - |7897k|   0 |  28 | 815 |  78 | 815 |  91 |  26 |  12 |   0 | 9.283511e+05 | 9.459285e+05 |   1.89%
+  0.1s|     1 |     0 |   149 |     - |7951k|   0 |  28 | 815 |  78 | 815 |  91 |  26 |  12 |   0 | 9.283511e+05 | 9.459285e+05 |   1.89%
+  0.1s|     1 |     0 |   161 |     - |7983k|   0 |  25 | 815 |  78 | 815 |  99 |  34 |  12 |   0 | 9.322851e+05 | 9.459285e+05 |   1.46%
+  0.1s|     1 |     0 |   161 |     - |7984k|   0 |  25 | 815 |  78 | 815 |  99 |  34 |  12 |   0 | 9.322851e+05 | 9.459285e+05 |   1.46%
+  0.1s|     1 |     0 |   165 |     - |8049k|   0 |   0 | 815 |  78 | 815 | 104 |  39 |  12 |   0 | 9.326158e+05 | 9.459285e+05 |   1.43%
+  0.1s|     1 |     0 |   165 |     - |8049k|   0 |   0 | 815 |  78 | 815 | 104 |  39 |  12 |   0 | 9.326158e+05 | 9.459285e+05 |   1.43%
+u 0.1s|     1 |     0 |   165 |     - |8143k|   0 |   - | 815 |  74 | 815 | 104 |   0 |  12 |   0 | 9.326158e+05 | 9.326158e+05 |   0.00%
+  0.1s|     1 |     0 |   165 |     - |8143k|   0 |   - | 815 |  74 | 815 | 104 |  39 |  12 |   0 | 9.326158e+05 | 9.326158e+05 |   0.00%
+
+SCIP Status        : problem is solved [optimal solution found]
+Solving Time (sec) : 0.08
+Solving Nodes      : 1
+Primal Bound       : +9.32615750000000e+05 (5 solutions)
+Dual Bound         : +9.32615750000000e+05
+Gap                : 0.00 %
