@@ -67,14 +67,14 @@ and how the resulting model can be solved with SCIP.
 \section{The Facility Location Problem}
 
 Facility locating has attracted much attention in operations research over the decades,
-focussing on both algorithms and formulations in a variety of settings in both the private sectors (e.g., industrial plants and retail facilities) and the public sectors(e.g., hospitals).
+focussing on both algorithms and formulations in a variety of settings in both the private sectors (e.g., industrial plants and retail facilities) and the public sectors (e.g., hospitals).
 Facility location problems (FLP) locate a set of facilities -- also called resources -- to minimize the cost of satisfying a set of demands,
 which is defined by the "customers", with respect to a set of constraints.
 The branches of locating facilities are broad, for an overview see, e.g.,~\cite{aikens1985facility,brandeau1989overview}.
 
 In this tutorial, we will focus on the \emph{single source capacitated FLP}~\cite{daskin1993new},
-which is generalization of the \emph{uncapacitated FLP}~\cite{daskin1993toward}.
-The single-source capacitated FLP (SSCFLP) reads as follows.
+which generalizes the \emph{uncapacitated FLP}~\cite{daskin1993toward}.
+The single source capacitated FLP (SSCFLP) reads as follows.
 
 \begin{align}
 %
@@ -90,8 +90,8 @@ The single-source capacitated FLP (SSCFLP) reads as follows.
 Here, $I$ and $J$ denote index set of costumers and facilities.
 Every facility $j \in J$ has opening costs $f_j$ and an assigned binary variable $y_j$
 indicating whether the facilities is open ($y_j = 1$) or closed ($y_j = 0$).
-To every costumer $i \in I$, $\vert J \vert$ binary variables $x_{ij}$ are assigned,
-indicating whether costumer $i$ is assigned to facility $j$ ($x_{ij} = 1$).
+To every costumer $i \in I$, $\vert J \vert$ binary variables $x_{ji}$ are assigned,
+indicating whether costumer $i$ is assigned to facility $j$ ($x_{ji} = 1$).
 In SSCFLP, every costumer has to be delivered by exactly one facility.
 Every costumer requests a demand $d_i$ and every facility provides a capacity $s_j$.
 Thus, the sum of satisfiable demands of all costumers connected to a facility $j$ is bounded by $s_jy_j$.
