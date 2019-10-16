@@ -51,19 +51,37 @@
 
 \section{The Facility Location Problem}
 
-\todo[inline]{Jakob}
+Facility locating has attracted much attention in operations research over the decades,
+focussing on both algorithms and formulations in a variety of settings in both the private sectors (e.g., industrial plants and retail facilities) and the public sectors(e.g., hospitals).
+Facility location problems (FLP) locate a set of facilities -- also called resources -- to minimize the cost of satisfying a set of demands,
+which is defined by the "customers", with respect to a set of constraints.
+The branches of locating facilities are broad, for an overview see, e.g.,~\cite{aikens1985facility,brandeau1989overview}.
+
+In this tutorial, we will focus on the \emph{single source capacitated FLP}~\cite{daskin1993new},
+which is generalization of the \emph{uncapacitated FLP}~\cite{daskin1993toward}.
+The single-source capacitated FLP (SSCFLP) reads as follows.
 
 \begin{align}
 %
 \begin{aligned}
-& & \min \sum\limits_{j \in J} f_{j} y_{j} + \sum\limits_{i\in I, j\in J} c_{j,i} x_{j,i}\\
-&\text{s.t.}& \sum\limits_{j \in J} : x_{j,i} &= 1 & \text{for all $i \in I$}\\
-&& \sum\limits_{i \in I} d_{i} x_{j,i} & \leq s_{j} y_{j} & \text{for all $j \in J$}\\
-&& (x,y) & \in \{0,1\}^{|J \times I|} \times \{0,1\}^{|J|}
+&           & \min & \sum\limits_{j \in J} f_{j} y_{j} + \sum\limits_{i\in I, j\in J} c_{ji} x_{ji} & \\
+&\text{s.t.}&& \sum\limits_{j \in J} x_{ji} = 1 & \text{for all $i \in I$}\\
+&           && \sum\limits_{i \in I} d_{i} x_{ji} \leq s_{j} y_{j} & \text{for all $j \in J$}\\
+&           && (x,y) \in \{0,1\}^{|J \times I|} \times \{0,1\}^{|J|} &
 \end{aligned}
 \tag{SSCFLP}\label{eq:model}
 \end{align}
 
+Here, $I$ and $J$ denote index set of costumers and facilities.
+Every facility $j \in J$ has opening costs $f_j$ and an assigned binary variable $y_j$
+indicating whether the facilities is open ($y_j = 1$) or closed ($y_j = 0$).
+To every costumer $i \in I$, $\vert J \vert$ binary variables $x_{ij}$ are assigned,
+indicating whether costumer $i$ is assigned to facility $j$ ($x_{ij} = 1$).
+In SSCFLP, every costumer has to be delivered by exactly one facility.
+Every costumer requests a demand $d_i$ and every facility provides a capacity $s_j$.
+Thus, the sum of satisfiable demands of all costumers connected to a facility $j$ is bounded by $s_jy_j$.
+The overall objective to minimize both the opening costs for all facility $f_j$
+and the costs $c_{ji}$ for linking a facility $j$ to a costumer $i$.
 
 \section{Building a ZIMPL Model}
 
@@ -82,7 +100,7 @@ The parameters of each instance are described in a single data file (extension \
   \item the first line contains the number $|J|$ of facilities and $|I|$ of customers
   \item the next $|J|$ lines contain, for each facility $j \in J$, the index $j$ itself, the cost coefficient $f_{j}$ to open $j$ and its supply $s_{j}$.
   \item the next $|I|$ lines list the demand of each customer $i \in I$, one per line.
-  \item the remaining $|I| \times |J|$ lines list the costs $c_{j,i}$ to link facility $j$ to customer $i$.
+  \item the remaining $|I| \times |J|$ lines list the costs $c_{ji}$ to link facility $j$ to customer $i$.
 \end{itemize}
 
 The task is to write a ZIMPL file that combines the data source and the mathematical model into an instance of SSCFLP.
