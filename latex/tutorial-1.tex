@@ -47,7 +47,22 @@
 
 \section{The SCIP Optimization Suite}
 
-\todo[inline]{Jakob}
+The SCIP Optimization Suite compiles five complementary software packages designed to model and solve a large variety of mathematical optimization problems:
+\begin{itemize}
+  \item the modeling language Zimpl~\cite{koch2004rapid}
+  \item the simplex-based linear programming solver SoPlex~\cite{Wunderling1996}
+  \item the constraint integer programming solver SCIP~\cite{Achterberg2009}, which can be used as a fast standalone solver for mixed-integer linear and nonlinear programs and a flexible branch-cut-and-price framework,
+  \item the automatic decomposition solver GCG~\cite{GamrathLuebbecke2010}
+  \item the UG framework for parallelization of branch-and-bound solvers~\cite{Shinano2018}.
+\end{itemize}
+All of the five tools can be downloaded\footnote{\url{https://scip.zib.de}} in source code and are freely available for usage
+in non-profit research.
+They are accompanied by several extensions for more problem-specific classes
+such as the award-winning Steiner tree solver SCIP-Jack~\cite{Gamrath2017scipjack}
+or the mixed-integer semidefinite programming solver SCIP-SDP~\cite{GallyPfetschUlbrich2016}.
+
+This tutorial describes how the modeling language ZIMPL can be used to formulate the \emph{single-source capacitated facility location problem}
+and how the resulting model can be solved with SCIP.
 
 \section{The Facility Location Problem}
 
@@ -311,7 +326,7 @@ in particular the installation instructions \url{https://scip.zib.de/doc/html/IN
 
 \cite{*}
 
-\section*{Bibliography}
+% \section*{Bibliography}
 
 \bibliographystyle{alpha}
 \bibliography{tutorial}
