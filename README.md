@@ -8,7 +8,7 @@ The data files are modified versions (leaving the actual problem data unchanged)
 of the OR library from http://or-brescia.unibs.it/instances/instances_sscflp
 
 The tutorial requires the download of SCIP for your operating system under the link 
-https://scip.zib.de/download
+https://scip.zib.de#download
 
 The installers for all the platforms already support the parsing of ZIMPL models. 
 For diving deeper into SCIP, it is recommended to download and compile SCIP from the source code package, which includes supplementary coding examples.
